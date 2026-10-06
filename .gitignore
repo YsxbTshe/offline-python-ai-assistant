@@ -1,0 +1,41 @@
+# Local model installers, caches and generated runtime files
+work/OllamaSetup.exe
+work/launcher-before-fix-*/
+work/style-before-*/
+work/style-validation/
+__pycache__/
+**/__pycache__/
+*.pyc
+.pytest_cache/
+.ipynb_checkpoints/
+
+# Local generated files and backups
+*.bak
+generated_program.py
+outputs/__pycache__/
+
+# Local editor and environment secrets
+.env
+.env.*
+!.env.example
+.continue/
+
+# OS files
+Thumbs.db
+Desktop.ini
+
+# User-specific local style path
+local-ai.env.ps1
+local-ai-style-path.txt
+local-ai.env.cmd
+local-ai.config.json
+work/publish/
+.venv/
+venv/
+*.log
+*.gguf
+*.safetensors
+*.exe
+*.msi
+*.zip
+*.bundle

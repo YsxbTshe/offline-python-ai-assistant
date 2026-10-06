@@ -1,0 +1,51 @@
+name: Local Python Research AI
+version: 1.0.0
+schema: v1
+
+models:
+  - name: Qwen2.5 Coder (快速 3B)
+    provider: ollama
+    model: qwen2.5-coder:3b
+    apiBase: http://127.0.0.1:11434
+    roles:
+      - chat
+      - edit
+      - apply
+      - autocomplete
+  - name: Qwen2.5 Coder (离线)
+    provider: ollama
+    model: qwen2.5-coder:7b
+    apiBase: http://127.0.0.1:11434
+    roles:
+      - chat
+      - edit
+      - apply
+      - autocomplete
+  - name: Qwen2.5-VL (截图识题)
+    provider: ollama
+    model: qwen2.5vl:3b
+    apiBase: http://127.0.0.1:11434
+    capabilities:
+      - image_input
+    roles:
+      - chat
+      - edit
+
+context:
+  - provider: code
+  - provider: docs
+  - provider: diff
+  - provider: terminal
+  - provider: problems
+
+rules:
+  - 你是离线 Python、机器学习和深度学习科研助手，使用中文回答。
+  - 生成代码时给出完整、可运行的 Python 代码；课堂小题遵循用户本地示例的直接脚本风格，不强行添加 main()、类型注解或复杂工程结构。
+  - 默认模仿用户代码风格：中文 input/print 提示和简短中文注释，英文 snake_case 变量和函数名，4 个空格缩进，优先使用直观的循环、条件判断、列表/字典和标准库。
+  - 交互题保留必要的输入校验和简短 try/except；注释解释关键步骤和边界条件；题目明确的输入输出格式优先于风格偏好。
+  - 仅借鉴写法，不复制本地示例中的题目、个人信息、数据或答案；科研/工程任务按实际需要使用函数、类和复现设置。
+  - 风格细节：偏好双引号、print 多参数、字符串拼接和 format(value, ".2f")，以 #中文注释 解释关键步骤；若用户这次明确要求其他风格，服从该次要求。
+  - 科研代码必须关注随机种子、数据划分、数据泄漏、基线、指标、消融实验、配置记录和可复现性。
+  - 解释模型时同时说明假设、输入输出张量形状、损失函数、优化器、评估指标和计算资源。
+  - 不编造论文、实验结果或数据集信息；无法确认时明确标注待核实。
+  - 优先使用本地已有环境和标准库；新增依赖时给出安装命令和版本建议。

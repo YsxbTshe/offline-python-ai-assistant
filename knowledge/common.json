@@ -1,0 +1,22 @@
+[
+  {
+    "title": "美国队长的经典圆形盾牌",
+    "keywords": ["美国队长", "美队", "Captain America", "盾牌", "圆盾"],
+    "content": "经典圆盾是圆形，正面是同心圆。由外向内依次为红色外环、白色（电影道具常呈银白色）环、红色内环、蓝色中央圆盘。蓝色圆盘正中央是一颗白色五角星。不是十三颗星，不是整面美国国旗，没有贯穿盾面的横条，也不是红色星星。早期三角形盾牌和其他版本不属于这里的经典圆盾。绘图时可先画红色大圆，依次叠加白色、红色、蓝色小圆，再在中心画白色五角星。"
+  },
+  {
+    "title": "turtle 基础绘图",
+    "keywords": ["turtle", "海龟", "五角星", "同心圆"],
+    "content": "turtle 是 Python 标准库，依赖 Tk 图形界面。画同心圆必须保持圆心一致；默认朝右时，画半径 r、圆心 (x,y) 的圆，从 (x,y-r) 开始 circle(r)。实心圆必须调用 begin_fill/end_fill，仅 circle 只有轮廓。可用如下模板：\nfor radius, color in layers:\n    pen.penup()\n    pen.goto(0, -radius)\n    pen.setheading(0)\n    pen.pendown()\n    pen.color(color)\n    pen.begin_fill()\n    pen.circle(radius)\n    pen.end_fill()\n其中 layers 按半径从大到小包含每个色块。中心五角星可用 math.cos/sin：十个顶点交替取外半径 r 和内半径 r*0.382，角度从90度起每次加36度；依次 goto 顶点、回到首点，用 begin_fill/end_fill 填充。Screen 没有 screenshot 方法。turtle.done() 保持窗口。不要在用户未要求时关闭窗口或保存图片。"
+  },
+  {
+    "title": "机器学习实验的数据划分",
+    "keywords": ["机器学习", "深度学习", "训练集", "测试集", "验证集", "数据泄漏"],
+    "content": "训练集用于拟合参数，验证集用于选模型和超参数，测试集用于最终独立评估。标准化器和特征选择器应只在训练集拟合；交叉验证时应放进每个折内的 pipeline。时间序列通常按时间划分，不能把未来信息泄漏给过去。固定随机种子有助于复现，但不保证所有硬件和算子完全确定。不能编造实验结果或论文引用。"
+  },
+  {
+    "title": "Python 数据分析与图像库",
+    "keywords": ["numpy", "pandas", "matplotlib", "jieba", "wordcloud", "opencv", "cv2", "中文乱码"],
+    "content": "NumPy 提供数组和矩阵运算；pandas 处理表格数据；matplotlib 绘制图表；jieba 用于中文分词；wordcloud 生成词云；OpenCV 的 Python 导入名是 cv2。OpenCV 默认彩色图像为 BGR，matplotlib 通常需要 RGB。中文词云要为 WordCloud 的 font_path 指定可用的中文字体；中文图表需要选择支持中文的字体。源码保存为 UTF-8。这些库在本地安装后可以离线处理本地输入。"
+  }
+]

@@ -3,6 +3,17 @@ version: 1.0.0
 schema: v1
 
 models:
+  - name: Qwen2.5 (中文常识与对话 7B)
+    provider: ollama
+    model: qwen2.5:7b
+    apiBase: http://127.0.0.1:11434
+    defaultCompletionOptions:
+      contextLength: 8192
+      temperature: 0.2
+    roles:
+      - chat
+      - edit
+      - apply
   - name: Qwen2.5 Coder (快速 3B)
     provider: ollama
     model: qwen2.5-coder:3b
@@ -39,7 +50,9 @@ context:
   - provider: problems
 
 rules:
-  - 你是离线 Python、机器学习和深度学习科研助手，使用中文回答。
+  - 你是中文离线助手，能够回答日常常识、文化与科学问题，也擅长 Python、机器学习和深度学习科研；不要把所有问题都转换为编程任务。
+  - 结合当前聊天历史理解“它”“刚才那个”“继续”，直接回应本次意图；外观问题说明形状、颜色和关键图案。
+  - 只有实际编辑工具或 Apply 成功后才能说已保存文件；普通 Chat 只提供回答。写入位置遵循用户明确给出的目录。
   - 生成代码时给出完整、可运行的 Python 代码；课堂小题遵循用户本地示例的直接脚本风格，不强行添加 main()、类型注解或复杂工程结构。
   - 默认模仿用户代码风格：中文 input/print 提示和简短中文注释，英文 snake_case 变量和函数名，4 个空格缩进，优先使用直观的循环、条件判断、列表/字典和标准库。
   - 交互题保留必要的输入校验和简短 try/except；注释解释关键步骤和边界条件；题目明确的输入输出格式优先于风格偏好。

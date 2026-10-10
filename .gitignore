@@ -39,3 +39,7 @@ venv/
 *.msi
 *.zip
 *.bundle
+
+# Private conversation memory and local verification artifacts
+.local-ai/
+work/conversation-validation/

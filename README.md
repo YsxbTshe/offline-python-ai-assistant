@@ -7,6 +7,9 @@
 ## 功能
 
 - Qwen2.5-Coder 3B / 7B：手动选择，或按关键词和请求长度自动选择。3B 较快，7B 通常更适合复杂代码。
+- Qwen2.5 7B 通用版：中文常识和日常对话；代码任务继续使用 Coder 模型。
+- 最近对话、当前源码和保存目录保存在本机，重启后恢复；说“开始新对话”可清空。
+- 本地知识笔记用于补充明确资料；可说“记住：这次所有图表都用中文标题”保留会话要求。
 - 自然语言生成 `.py` 文件、修改和审查代码，覆盖时备份为 `.bak`。
 - 本地截图通过 Qwen2.5-VL 3B 转写题目，再交给代码模型生成文件。
 - 读取 Word / PDF / PPT 的文字，将回答追加到 `_AI完成` 副本。
@@ -23,9 +26,10 @@ python -m pip install -r requirements.txt
 ollama pull qwen2.5-coder:3b
 ollama pull qwen2.5-coder:7b
 ollama pull qwen2.5vl:3b
+ollama pull qwen2.5:7b
 ```
 
-7B 在 CPU 上响应较慢且需要更多内存；可只安装并固定使用 3B。截图功能需要视觉模型。首次下载需要联网。
+7B 在 CPU 上响应较慢且需要更多内存。若只使用 3B，需要安装并固定代码模型为 3B，同时将 `general_model` 改为已安装的通用模型（例如另行下载的 `qwen2.5:3b`）。截图功能需要视觉模型。首次下载需要联网。
 
 ## 启动和保存
 
@@ -39,6 +43,22 @@ ollama pull qwen2.5vl:3b
 
 默认输出到当前用户主目录下的 `OfflinePythonAI`，明确指定“桌面”时保存到桌面。程序默认生成文件，不自动执行生成的代码。
 
+可连续用自然语言操作，例如：
+
+```text
+美国队长的经典圆盾是什么样的？
+用 turtle 把刚才说的盾牌画出来，保存为 shield.py
+把背景改成黑色，保留盾牌的颜色
+把代码保存到这个目录：D:\works\绘图项目
+开始新对话
+```
+
+明确给出的本机绝对路径可以在默认目录以外，支持中文和空格；未提供目录时会等待下一条消息补充。只有保存指令时直接保存当前代码，不重新生成。连续修改会读取当前文件，保留编辑器里的修改；覆盖前备份真实旧内容，语法检查失败不覆盖。
+
+这是有限的会话记忆，不是无限上下文：默认 8192 token，按预算携带最近完整轮次，当前代码另行保留。磁盘最多保留最近 12 轮，超大文件会提示拆分。私有会话在 `.local-ai/conversation.json`，已被 Git 忽略；请勿同时开多个命令行窗口编辑同一会话。
+
+`knowledge/common.json` 是可编辑的小型参考资料集，按关键词和最近话题读取；目前包括经典盾牌图案、turtle、常用 Python 库和机器学习数据划分。它不是完整百科，不能保证所有常识都正确；7B 也可能产生事实错误。本次明确的笔记可用“记住：……”添加，重启后保留，开始新对话时清空；这些个人笔记只在私有会话文件里。
+
 ```text
 /model 3b
 /model 7b
@@ -51,7 +71,7 @@ ollama pull qwen2.5vl:3b
 /quit
 ```
 
-自动路由使用简单规则，可能需要手动调整；不是模型能力评测。`/run` 会执行本机代码，运行前请检查内容。
+代码自动路由使用简单规则，可能需要手动调整；不是模型能力评测。3B / 7B 开关控制代码生成，日常问答始终使用 `general_model`。`/run` 会执行本机代码，运行前请检查内容。
 
 ## 本地配置
 
@@ -60,11 +80,13 @@ ollama pull qwen2.5vl:3b
 ```json
 {
   "output_dir": "~/OfflinePythonAI",
-  "style_reference": "~/PythonStyleExamples"
+  "style_reference": "~/PythonStyleExamples",
+  "general_model": "qwen2.5:7b",
+  "context_length": 8192
 }
 ```
 
-也可设置环境变量 `LOCAL_AI_ROOT`、`LOCAL_AI_STYLE_REFERENCE`、`LOCAL_AI_MODEL` 或 `LOCAL_AI_MODEL_MODE`，它们优先于默认配置。旧版本的输出目录内 `local-ai-style-path.txt` 仍可使用；不指定风格目录时仅使用通用规则。项目不自动加载 `.env`。
+也可设置环境变量 `LOCAL_AI_ROOT`、`LOCAL_AI_STYLE_REFERENCE`、`LOCAL_AI_MODEL`、`LOCAL_AI_MODEL_MODE` 或 `LOCAL_AI_GENERAL_MODEL`，它们优先于默认配置。旧版本的输出目录内 `local-ai-style-path.txt` 仍可使用；不指定风格目录时仅使用通用规则。项目不自动加载 `.env`。
 
 ```text
 查看我的代码风格
@@ -83,6 +105,7 @@ ollama pull qwen2.5vl:3b
 把 `.docx` / `.pdf` / `.pptx` 放在输出目录，输入 `/文档 题目.docx 完成题目`。目前提取文字并追加回答，扫描 PDF 需要另行 OCR；复杂版式、图片、公式和长文档可能无法完整处理。PDF 中文字体和 PPT 长回答排版仍有限制。
 
 - [中文新手说明书](outputs/本地Python_AI助手新手说明书.md)
+- [更新记录](CHANGELOG.md)
 - [科研提示词模板](科研研究提示词模板.md)
 - 运行 `python work/create_manual_docx.py` 在桌面生成 Word 说明书。
 
@@ -93,6 +116,7 @@ ollama pull qwen2.5vl:3b
 ```powershell
 python -m py_compile local_python_ai.py
 python work/test_style_integration.py
+python work/test_conversation.py
 python work/verify_style_result.py
 ```
 

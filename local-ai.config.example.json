@@ -1,4 +1,6 @@
 {
   "output_dir": "~/OfflinePythonAI",
-  "style_reference": "~/PythonStyleExamples"
+  "style_reference": "~/PythonStyleExamples",
+  "general_model": "qwen2.5:7b",
+  "context_length": 8192
 }
